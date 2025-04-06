@@ -14,8 +14,8 @@ public class ProdutoController {
         dbHandler.remover(id);
     }
 
-    public void buscarProdutoPorid(int id){
-        dbHandler.procurar(id);
+    public Produto buscarProdutoPorid(int id){
+        return dbHandler.procurar(id);
     }
     public void imprimirProdutos(){
         dbHandler.imprimirProdutos();

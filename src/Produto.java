@@ -62,4 +62,8 @@ public class Produto {
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
+
+    public String toCSV(){
+        return id + ";" + tipo + ";" + nome + ";" + descricao + ";" + preco + ";" + quantidade + ";";
+    }
 }

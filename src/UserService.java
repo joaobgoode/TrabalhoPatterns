@@ -18,8 +18,24 @@ public class UserService {
         funcionarioController = new FuncionarioController();
     }
 
+    public void procurarClientePorCPF(){
+        System.out.print("CPF do Cliente: ");
+        String cpf = sc.nextLine();
+        Cliente cliente = clienteController.procurarClientePorCpf(cpf);
+        if(cliente != null){
+            System.out.println("Funcionario encontrado: ");
+            System.out.printf("""
+                   CPF: %s;
+                   Nome: %s;
+                   Data de Nascimento: %s;
+                   Telefone: %s;
+                   """, cliente.getCpf(), cliente.getNome(), cliente.getDataNascimento(), cliente.getTelefone());
+            return;
+        }
+        System.out.println("Cliente não encontrado");
+    }
 
-    public Cliente addCliente(){
+    public void addCliente(){
 
         System.out.println("Cadastrando cliente");
         ClienteBuilder clienteBuilder = new ClienteBuilder();
@@ -45,7 +61,6 @@ public class UserService {
         System.out.println("Cliente criado");
         clienteController.addCliente(cliente);
 
-        return cliente;
     }
 
 
@@ -57,34 +72,45 @@ public class UserService {
         System.out.println("Cliente deletado");
     }
 
-    public void ListarClientes(){
-        clienteController.listarClientes();
-    }
-
     public void atualizarCliente(){
-        ClienteBuilder clienteBuilderAtualizado = new ClienteBuilder();
 
         System.out.println("Qual o CPF do cliente que você quer atualizar?");
         String cpf = sc.nextLine();
-        clienteBuilderAtualizado.setCpf(cpf);
 
-        System.out.println("Digite o nome do cliente: ");
+        Cliente cliente = clienteController.procurarClientePorCpf(cpf);
+
+
+        System.out.printf("Nome [ %s ]: ", cliente.getNome());
         String nome = sc.nextLine();
-        clienteBuilderAtualizado.setNome(nome);
-
-        System.out.println("Digite a data de nascimento do cliente:");
+        if (nome.isEmpty()){
+            nome = cliente.getNome();
+        }
+        System.out.printf("Data de Nascimento [ %s ]: ", cliente.getDataNascimento());
         String dataNascimento = sc.nextLine();
-        clienteBuilderAtualizado.setDataNascimento(dataNascimento);
+        if (dataNascimento.isEmpty()){
+            dataNascimento = cliente.getDataNascimento();
+        }
 
-        System.out.println("Digite o telefone do cliente:");
+        System.out.printf("Telefone [ %s ]: ", cliente.getTelefone());
         String telefone = sc.nextLine();
-        clienteBuilderAtualizado.setTelefone(telefone);
-
-        Cliente clienteAtualizado = clienteBuilderAtualizado.criar();
-
-        clienteController.atualizarCliente(clienteAtualizado);
+        if (telefone.isEmpty()){
+            telefone = cliente.getTelefone();
+        }
+        ClienteBuilder clienteBuilder = new ClienteBuilder();
+        clienteBuilder.setNome(nome);
+        clienteBuilder.setCpf(cpf);
+        clienteBuilder.setDataNascimento(dataNascimento);
+        clienteBuilder.setTelefone(telefone);
+        clienteController.atualizarCliente(clienteBuilder.criar());
         System.out.println("Cliente atualizado");
-
+        System.out.printf(
+                """
+                Novos dados:
+                Nome: %s;
+                CPF: %s;
+                Data de Nascimento: %s;
+                Telefone: %s;
+                """, nome, cpf, dataNascimento, telefone);
     }
 
     public void imprimirClientes(){
@@ -93,7 +119,7 @@ public class UserService {
 
 
 
-    public Produto addProduto(){
+    public void addProduto(){
         ProdutoBuilder produtoBuilder = new ProdutoBuilder();
         Scanner sc = new Scanner(System.in);
 
@@ -129,45 +155,66 @@ public class UserService {
         System.out.println("Produto criado");
 
         produtoController.addProduto(produto);
-        return produto;
     }
 
 
 
     public void atualizarProduto(){
-        ProdutoBuilder produtoBuilderAtualizado = new ProdutoBuilder();
-
 
         System.out.println("Qual o id do produto que você quer atualizar?");
         int id = sc.nextInt();
         sc.nextLine();
-        produtoBuilderAtualizado.setId(id);
+        Produto produto = produtoController.buscarProdutoPorid(id);
 
-        System.out.println("Digite o tipo do produto: ");
+        if (produto == null){
+            System.out.println("Produto não encontrado");
+            return;
+        }
+
+        System.out.printf("Tipo [ %s ]: ", produto.getTipo());
         String tipo = sc.nextLine();
-        produtoBuilderAtualizado.setTipo(tipo);
+        if (tipo.isEmpty()){
+            tipo = produto.getTipo();
+        }
 
-
-        System.out.println("Digite o nome do produto: ");
+        System.out.printf("Nome [ %s ]: ", produto.getNome());
         String nome = sc.nextLine();
-        produtoBuilderAtualizado.setNome(nome);
+        if (nome.isEmpty()){
+            nome = produto.getNome();
+        }
 
-        System.out.println("Digite a descrição do produto: ");
+        System.out.printf("Descrição [ %s ]: ", produto.getDescricao());
         String descricao = sc.nextLine();
-        produtoBuilderAtualizado.setDescricao(descricao);
+        if (descricao.isEmpty()){
+            descricao = produto.getDescricao();
+        }
 
-        System.out.println("Digite o preço do produto:");
-        double preco = sc.nextDouble();
-        produtoBuilderAtualizado.setPreco(preco);
+        System.out.printf("Preço [ %f ] :", produto.getPreco());
+        String precoInput = sc.nextLine();
+        double preco;
+        if (precoInput.isEmpty()){
+            preco = produto.getPreco();
+        } else {
+            preco = Double.parseDouble(precoInput);
+        }
 
-        System.out.println("Digite a quantidade do produto:");
-        int qtd = sc.nextInt();
-        sc.nextLine();
-        produtoBuilderAtualizado.setQuantidade(qtd);
+        System.out.printf("Quantidade [ %d ]: ", produto.getQuantidade());
+        String qtdInput = sc.nextLine();
+        int qtd;
+        if (qtdInput.isEmpty()){
+            qtd = produto.getQuantidade();
+        } else {
+            qtd = Integer.parseInt(qtdInput);
+        }
 
-        Produto produtoAtualizado = produtoBuilderAtualizado.criar();
-
-        produtoController.atualizarProduto(produtoAtualizado);
+        ProdutoBuilder produtoBuilder = new ProdutoBuilder();
+        produtoBuilder.setId(id);
+        produtoBuilder.setNome(nome);
+        produtoBuilder.setDescricao(descricao);
+        produtoBuilder.setTipo(tipo);
+        produtoBuilder.setPreco(preco);
+        produtoBuilder.setQuantidade(qtd);
+        produtoController.atualizarProduto(produtoBuilder.criar());
         System.out.println("Produto atualizado");
 
     }
@@ -176,8 +223,20 @@ public class UserService {
         Scanner sc = new Scanner(System.in);
         int id = sc.nextInt();
         sc.nextLine();
-
-        produtoController.buscarProdutoPorid(id);
+        Produto produto = produtoController.buscarProdutoPorid(id);
+        if (produto == null){
+            System.out.println("Produto não encontrado");
+            return;
+        }
+        System.out.printf("""
+                Produto Encontrado:
+                ID: %d;
+                Tipo: %s;
+                Nome: %s;
+                Descricao: %s;
+                Preco: %s;
+                Quantidade: %s;
+                """, produto.getId(), produto.getTipo(), produto.getNome(), produto.getDescricao(), produto.getPreco(), produto.getQuantidade());
     }
 
 
@@ -189,39 +248,68 @@ public class UserService {
         produtoController.removerProdutoPorId(id);
         System.out.println("Produto deletado");
     }
+
     public void imprimirProdutos(){
         produtoController.imprimirProdutos();
     }
 
-    public Funcionario cadastrarFuncionario() {
+    public void cadastrarFuncionario() {
         try {
-            System.out.println("Qual cargo do Funcionario (1-vendedor, 2-gerente)");
-            int cargoFunc = sc.nextInt();
+
+            System.out.println("Cargo do Funcionario (1-Vendedor, 2-Gerente): ");
+            int codCargo = sc.nextInt();
             sc.nextLine();
 
+            if (codCargo == 2 && !(user.isDono)){
+                System.out.println("Você não tem permissão para criar gerentes, procurar o dono");
+                return;
+            }
+
             System.out.println("Nome do Funcionario: ");
-            String nome = sc.next();
-            sc.nextLine();
+            String nome = sc.nextLine();
 
             System.out.println("id do Funcionario");
             int id = sc.nextInt();
             sc.nextLine();
 
-            Funcionario funcionario = funcionarioFactory.criarFuncionario(id, nome, cargoFunc);
+            Funcionario funcionario = funcionarioFactory.criarFuncionario(id, nome, codCargo);
             funcionarioController.criarFuncionario(funcionario);
-            return funcionario;
+            System.out.printf(
+                    """
+                    Novos dados:
+                    ID: %d;
+                    Nome: %s;
+                    Cargo: %s;
+                    """, id, nome, (codCargo==1?"Vendedor":"Gerente"));
 
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida. Por favor, digite o tipo de dado correto.");
-            sc.nextLine(); // Limpa o buffer do scanner
-            return null;
+            cadastrarFuncionario();
         } catch (NoSuchElementException | IllegalStateException e) {
             System.out.println("Erro na leitura dos dados: " + e.getMessage());
-            return null;
         } catch (Exception e) {
             System.out.println("Ocorreu um erro inesperado: " + e.getMessage());
-            return null;
         }
+    }
+
+
+    public void procurarFuncionarioPorID(){
+        System.out.print("Id do Funcionario: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        Funcionario funcionario = funcionarioController.buscarFuncionarioPorId(id);
+        if(funcionario != null){
+            System.out.println("Funcionario encontrado: ");
+            System.out.printf("""
+                   ID: %d;
+                   Nome: %s;
+                   Cargo: %s;
+                   """, funcionario.getId(),
+                    funcionario.getNome(),
+                    funcionario.getCod_cargo() == 1?"Vendedor":"Gerente");
+            return;
+        }
+        System.out.println("Funcionário não encontrado");
     }
 
     public void deletarFuncionario(){
@@ -231,34 +319,52 @@ public class UserService {
         System.out.println("Funcionario apagado com sucesso");
     }
 
-    public Funcionario atualizarFuncionario() {
+    public void atualizarFuncionario() {
         try {
             System.out.println("Qual o id do funcionario?");
             int idFunc = sc.nextInt();
             sc.nextLine();
+            Funcionario funcionario = funcionarioController.buscarFuncionarioPorId(idFunc);
+            if (funcionario == null){
+                System.out.println("Funcionário não existe");
+                return;
+            }
+            if (funcionario.getCod_cargo() == 2 && !(user.isDono)){
+                System.out.println("Você não pode editar este funcionário");
+                return;
+            }
+            System.out.printf("Nome do funcionario [%s]: ", funcionario.getNome());
+            String nome = sc.nextLine();
+            if (nome.isEmpty()){
+                nome = funcionario.getNome();
+            }
+            int cod = funcionario.getCod_cargo();
+            if (user.isDono) {
+                System.out.printf("Cargo do funcionario (1-Vendedor, 2-Gerente) [%d]: ", funcionario.getCod_cargo());
+                String cod_entrada = sc.nextLine();
 
-            System.out.println("Nome do Funcionario: ");
-            String novoNome = sc.next();
-            sc.nextLine();
+                if (!(cod_entrada.isEmpty())) {
+                    cod = Integer.parseInt(cod_entrada);
+                }
+            }
 
-            System.out.println("Novo cargo do funcionario (1-vendedor, 2-gerente): ");
-            int novoCargo = sc.nextInt();
-            sc.nextLine();
-
-            Funcionario funcionario = new Funcionario(idFunc,novoNome,novoCargo);
+            System.out.printf(
+                    """
+                    Novos dados:
+                    ID: %d;
+                    Nome: %s;
+                    Cargo: %s;
+                    """, idFunc, nome, (cod==1?"Vendedor":"Gerente"));
+            funcionario.setNome(nome);
+            funcionario.setCod_cargo(cod);
             funcionarioController.atualizarFuncionario(funcionario);
-            return funcionario;
-
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida. Por favor, digite o tipo de dado correto.");
-            sc.nextLine();
-            return null;
+            atualizarFuncionario();
         } catch (NoSuchElementException | IllegalStateException e) {
             System.out.println("Erro na leitura dos dados: " + e.getMessage());
-            return null;
         } catch (Exception e) {
             System.out.println("Ocorreu um erro inesperado: " + e.getMessage());
-            return null;
         }
     }
 

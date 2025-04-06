@@ -10,10 +10,10 @@ public abstract class DBHandler<k, V> {
     public DBHandler(String endereco) {
         this.endereco = endereco;
         todos = new HashMap<k, V>();
-        carregar();
+        lerCSV();
     }
 
-    public abstract void carregar();
+    public abstract void lerCSV();
     public abstract void salvar();
     public abstract void criar(V objeto);
     public abstract V atualizar(V objeto);

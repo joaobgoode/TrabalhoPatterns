@@ -23,7 +23,7 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
 
 
     @Override
-    public void carregar() {
+    public void lerCSV() {
         try (BufferedReader br = new BufferedReader(new FileReader(endereco))) {
             String linha;
             boolean primeiraLinha = true;
@@ -40,7 +40,7 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
                 String nome = campos[1].trim();
                 String dataNascimento = campos[2].trim();
                 String telefone = campos[2].trim();
-                Cliente cliente = new Cliente(cpf, nome, dataNascimento, telefone);
+                Cliente cliente = new Cliente(nome, cpf, dataNascimento, telefone);
                 todos.put(cpf, cliente);
             }
         } catch (IOException e) {
@@ -51,10 +51,10 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
     @Override
     public void salvar() {
         try (FileWriter writer = new FileWriter(endereco)) {
-            writer.append("id;tipo;nome;descricao;preco;quantidade\n");
+            writer.append("nome;cpf;dataNascimento;telefone\n");
 
             for (Cliente Cliente : todos.values()) {
-                writer.write(Cliente.toString() + "\n");
+                writer.write(Cliente.toCSV() + "\n");
             }
             writer.flush();
         } catch (IOException e) {
@@ -77,6 +77,7 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
     @Override
     public Cliente atualizar(Cliente objeto) {
         String cpf = objeto.getCpf();
+        System.out.println(cpf);
         if (contem(cpf)){
             todos.replace(cpf, todos.get(cpf), objeto);
             salvar();
@@ -94,8 +95,8 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
 
         for (Cliente c : super.todos.values()) {
             System.out.println(
-                    "CPF: " + c.getCpf()
-                            + ", Nome: " + c.getNome()
+                            "Nome: " + c.getNome()
+                            + ", CPF: " + c.getCpf()
                             + ", Data de Nascimento: " + c.getDataNascimento()
                             + ", Telefone: " + c.getTelefone());
         }

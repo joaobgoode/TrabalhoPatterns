@@ -4,9 +4,6 @@ public class Cliente {
     private String dataNascimento;
     private String telefone;
 
-    public Cliente() {
-    }
-
     public Cliente(String nome, String cpf, String dataNascimento, String telefone) {
         this.nome = nome;
         this.cpf = cpf;
@@ -44,5 +41,9 @@ public class Cliente {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String toCSV(){
+        return nome + ";" + cpf + ";" + dataNascimento + ";" + telefone;
     }
 }

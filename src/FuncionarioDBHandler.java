@@ -23,11 +23,11 @@ public class FuncionarioDBHandler extends DBHandler<Integer, Funcionario> {
 
 
     @Override
-    public void carregar() {
+    public void lerCSV() {
         try (BufferedReader br = new BufferedReader(new FileReader(endereco))) {
             String linha;
             boolean primeiraLinha = true;
-
+            FuncionarioFactory funcionarioFactory = new FuncionarioFactory();
             while ((linha = br.readLine()) != null) {
                 if (primeiraLinha) {
                     primeiraLinha = false;
@@ -35,25 +35,26 @@ public class FuncionarioDBHandler extends DBHandler<Integer, Funcionario> {
                 }
 
                 String[] campos = linha.split(";");
-
                 int id = Integer.parseInt(campos[0]);
                 String nome = campos[1];
                 int cod_cargo = Integer.parseInt(campos[2]);
-                Funcionario Funcionario = new Funcionario(id, nome, cod_cargo);
-                todos.put(id, Funcionario);
+                Funcionario funcionario = funcionarioFactory.criarFuncionario(id, nome, cod_cargo);
+                todos.put(id, funcionario);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void salvar() {
         try (FileWriter writer = new FileWriter(endereco)) {
-            writer.append("id;tipo;nome;descricao;preco;quantidade\n");
+            writer.append("id;nome;cargo\n");
 
             for (Funcionario Funcionario : todos.values()) {
-                writer.write(Funcionario.toString() + "\n");
+                writer.write(Funcionario.toCSV() + "\n");
             }
             writer.flush();
         } catch (IOException e) {

@@ -21,4 +21,7 @@ public class FuncionarioController {
         dbHandler.remover(id);
     }
 
+    public Funcionario buscarFuncionarioPorId(int id){
+        return dbHandler.procurar(id);
+    }
 }

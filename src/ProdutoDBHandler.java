@@ -19,7 +19,7 @@ public class ProdutoDBHandler extends DBHandler<Integer, Produto> {
     }
 
     @Override
-    public void carregar() {
+    public void lerCSV() {
         try (BufferedReader br = new BufferedReader(new FileReader(endereco))) {
             String linha;
             boolean primeiraLinha = true;
@@ -52,7 +52,7 @@ public class ProdutoDBHandler extends DBHandler<Integer, Produto> {
             writer.append("id;tipo;nome;descricao;preco;quantidade\n");
 
             for (Produto produto : todos.values()) {
-                writer.write(produto.toString() + "\n");
+                writer.write(produto.toCSV() + "\n");
             }
             writer.flush();
         } catch (IOException e) {
@@ -100,4 +100,5 @@ public class ProdutoDBHandler extends DBHandler<Integer, Produto> {
                             + ", quantidade: " + c.getQuantidade());
         }
     }
+
 }

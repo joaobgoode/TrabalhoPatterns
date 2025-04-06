@@ -5,10 +5,8 @@ public class FuncionarioFactory {
     public Funcionario criarFuncionario(int id, String nome,int cod) throws ClassNotFoundException {
         switch (cod){
             case COD_VENDEDOR:
-                System.out.println("Vendedor "+nome+" criado com sucesso");
-                return new Vendedor(id, nome, cod);
+                return new Funcionario(id, nome, cod);
             case COD_GERENTE:
-                System.out.println("Gerente "+nome+" criado com sucesso");
                 return new Gerente(id,nome, cod);
             default:
                 throw new ClassNotFoundException("Código Inválido");
