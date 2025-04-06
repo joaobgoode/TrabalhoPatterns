@@ -315,6 +315,7 @@ public class UserService {
     public void deletarFuncionario(){
         System.out.println("Digite o id do funcionario: ");
         int id_func = sc.nextInt();
+        sc.nextLine();
         funcionarioController.deletarFuncionarioPorId(id_func);
         System.out.println("Funcionario apagado com sucesso");
     }

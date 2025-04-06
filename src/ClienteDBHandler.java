@@ -36,10 +36,10 @@ public class ClienteDBHandler extends DBHandler<String, Cliente> {
 
                 String[] campos = linha.split(";");
 
-                String cpf = campos[0].trim();
-                String nome = campos[1].trim();
+                String nome = campos[0].trim();
+                String cpf = campos[1].trim();
                 String dataNascimento = campos[2].trim();
-                String telefone = campos[2].trim();
+                String telefone = campos[3].trim();
                 Cliente cliente = new Cliente(nome, cpf, dataNascimento, telefone);
                 todos.put(cpf, cliente);
             }
